@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.syq.puffer.dao.sql.mapper.LogNodeInstanceMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.syq.puffer.dao.sql.entity.LogNodeInstance">
+        <id column="ID" property="id" />
+        <result column="NODE_INSTANCE_ID" property="nodeInstanceId" />
+        <result column="EVENT_TYPE" property="eventType" />
+        <result column="CONNECTION" property="connection" />
+        <result column="PROCESS_INSTANCE_ID" property="processInstanceId" />
+        <result column="NODE_ID" property="nodeId" />
+        <result column="NODE_NAME" property="nodeName" />
+        <result column="NODE_TYPE" property="nodeType" />
+        <result column="CREATE_TIME" property="createTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        ID, NODE_INSTANCE_ID, EVENT_TYPE, CONNECTION, PROCESS_INSTANCE_ID, NODE_ID, NODE_NAME, NODE_TYPE, CREATE_TIME
+    </sql>
+
+</mapper>

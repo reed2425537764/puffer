@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.syq.puffer.dao.sql.mapper.LogFiredRuleMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.syq.puffer.dao.sql.entity.LogFiredRule">
+        <id column="ID" property="id" />
+        <result column="GROUP_ID" property="groupId" />
+        <result column="ARTIFACT_ID" property="artifactId" />
+        <result column="DEPLOY_ID" property="deployId" />
+        <result column="PROCESS_INSTANCE_ID" property="processInstanceId" />
+        <result column="RS_NAME" property="rsName" />
+        <result column="RULE_NAME" property="ruleName" />
+        <result column="DESCRIPTION" property="description" />
+        <result column="CREATE_TIME" property="createTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        ID, GROUP_ID, ARTIFACT_ID, DEPLOY_ID, PROCESS_INSTANCE_ID, RS_NAME, RULE_NAME, DESCRIPTION, CREATE_TIME
+    </sql>
+
+</mapper>

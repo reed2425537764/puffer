@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.syq.puffer.dao.sql.mapper.ModelDoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.syq.puffer.dao.sql.entity.ModelDo">
+        <id column="ID" property="id" />
+        <result column="CLASS_NAME" property="className" />
+        <result column="LABEL" property="label" />
+        <result column="DESCRIPTION" property="description" />
+        <result column="PROJECT_ID" property="projectId" />
+        <result column="HIS_ID" property="hisId" />
+        <result column="CATALOG_ID" property="catalogId" />
+        <result column="DO_TYPE" property="doType" />
+        <result column="CREATE_UID" property="createUid" />
+        <result column="CREATE_TIME" property="createTime" />
+        <result column="UPDATE_UID" property="updateUid" />
+        <result column="UPDATE_TIME" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        ID, CLASS_NAME, LABEL, DESCRIPTION, PROJECT_ID, HIS_ID, CATALOG_ID, DO_TYPE, CREATE_UID, CREATE_TIME, UPDATE_UID, UPDATE_TIME
+    </sql>
+
+</mapper>

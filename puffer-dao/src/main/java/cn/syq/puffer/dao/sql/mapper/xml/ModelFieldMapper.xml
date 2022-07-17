@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.syq.puffer.dao.sql.mapper.ModelFieldMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.syq.puffer.dao.sql.entity.ModelField">
+        <id column="ID" property="id" />
+        <result column="NAME" property="name" />
+        <result column="LABEL" property="label" />
+        <result column="DESCRIPTION" property="description" />
+        <result column="CLASS_TYPE" property="classType" />
+        <result column="LIST_FLAG" property="listFlag" />
+        <result column="HIS_ID" property="hisId" />
+        <result column="PROJECT_ID" property="projectId" />
+        <result column="DO_ID" property="doId" />
+        <result column="CREATE_UID" property="createUid" />
+        <result column="CREATE_TIME" property="createTime" />
+        <result column="UPDATE_UID" property="updateUid" />
+        <result column="UPDATE_TIME" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        ID, NAME, LABEL, DESCRIPTION, CLASS_TYPE, LIST_FLAG, HIS_ID, PROJECT_ID, DO_ID, CREATE_UID, CREATE_TIME, UPDATE_UID, UPDATE_TIME
+    </sql>
+
+</mapper>

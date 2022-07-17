@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.syq.puffer.dao.sql.mapper.ModelBpmRsMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.syq.puffer.dao.sql.entity.ModelBpmRs">
+        <id column="ID" property="id" />
+        <result column="PROJECT_ID" property="projectId" />
+        <result column="BPM_ID" property="bpmId" />
+        <result column="RULE_SET_ID" property="ruleSetId" />
+        <result column="CREATE_TIME" property="createTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        ID, PROJECT_ID, BPM_ID, RULE_SET_ID, CREATE_TIME
+    </sql>
+
+</mapper>
