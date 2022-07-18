@@ -8,6 +8,7 @@ import cn.syq.puffer.dao.sql.entity.ModelProjectHis;
 import cn.syq.puffer.dao.sql.mapper.ModelProjectHisMapper;
 import cn.syq.puffer.dao.sql.mapper.ModelProjectMapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.stereotype.Service;
@@ -71,5 +72,10 @@ public class ProjectDomainServiceImpl implements ProjectDomainService {
         hisId.ifPresent(modelProject::setHisId);
         deployId.ifPresent(modelProject::setDeployId);
         modelProjectMapper.updateById(modelProject);
+    }
+
+    @Override
+    public Page<ModelProject> listAllProjects(Page<ModelProject> page) {
+        return modelProjectMapper.selectPage(page, null);
     }
 }

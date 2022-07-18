@@ -4,6 +4,7 @@ import cn.syq.puffer.business.exception.ManagerErrorCode;
 import cn.syq.puffer.business.exception.ManagerException;
 import cn.syq.puffer.business.model.api.ProjectDomainService;
 import cn.syq.puffer.dao.sql.entity.ModelProject;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,5 +36,11 @@ public class ProjectServiceImpl implements ProjectService{
         long projectHisId = projectDomainService.addProjectHis(label, description, modelProject);
 
         projectDomainService.updateById(modelProject.getId(), Optional.of(projectHisId), Optional.empty());
+    }
+
+    @Override
+    public Page<ModelProject> listProjects(int pageNo, int pageSize) {
+        Page<ModelProject> page = new Page<>(pageNo, pageSize);
+        return projectDomainService.listAllProjects(page);
     }
 }

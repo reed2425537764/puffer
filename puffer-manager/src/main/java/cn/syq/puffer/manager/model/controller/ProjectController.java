@@ -1,14 +1,18 @@
 package cn.syq.puffer.manager.model.controller;
 
 import cn.syq.puffer.business.model.project.service.ProjectService;
+import cn.syq.puffer.dao.sql.entity.ModelProject;
 import cn.syq.puffer.manager.model.api.ManagerResponse;
+import cn.syq.puffer.manager.model.api.PageVo;
 import cn.syq.puffer.manager.model.api.ProjectMetaResponse;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import java.util.stream.Collectors;
 
 /**
  * @Author: shiyuqin
@@ -35,8 +39,31 @@ public class ProjectController {
         return ManagerResponse.buildSuccess(response);
     }
 
-    @GetMapping("test")
-    public String string() {
-        return "1213";
+    @GetMapping
+    @Valid
+    public ManagerResponse<PageVo<ProjectMetaResponse>> listProjects(@RequestParam(required = false, defaultValue = "1") @Length(min = 1, max = 999) int pageNo,
+                                                                     @RequestParam(required = false, defaultValue = "30") @Length(min = 1, max = 999) int pageSize) {
+        Page<ModelProject> page = projectService.listProjects(pageNo, pageSize);
+
+        PageVo<ProjectMetaResponse> pageVo = PageVo.<ProjectMetaResponse>builder()
+                .pageNo((int) page.getCurrent())
+                .pageSize((int) page.getSize())
+                .totalPage((int) Math.ceil((double) page.getTotal() / page.getSize()))
+                .totalSize((int) page.getTotal())
+                .data(
+                        page.getRecords().stream().map(modelProject -> {
+                            ProjectMetaResponse response = new ProjectMetaResponse();
+                            response.setLabel(modelProject.getLabel());
+                            response.setDescription(modelProject.getDescription());
+                            return response;
+                        }).collect(Collectors.toList())
+                )
+                .build();
+
+        return ManagerResponse.buildSuccess(pageVo);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(Math.ceil(((double) 7)/2));
     }
 }

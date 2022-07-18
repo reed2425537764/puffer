@@ -26,6 +26,24 @@
             <artifactId>mybatis-plus-generator</artifactId>
             <version>3.3.2</version>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.baomidou</groupId>
+                    <artifactId>mybatis-plus-extension</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.velocity</groupId>
+                    <artifactId>velocity-engine-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.freemarker</groupId>
+                    <artifactId>freemarker</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.ibeetl</groupId>
+                    <artifactId>beetl</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.velocity</groupId>

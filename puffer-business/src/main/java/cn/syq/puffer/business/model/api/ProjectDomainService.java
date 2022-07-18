@@ -1,7 +1,7 @@
 package cn.syq.puffer.business.model.api;
 
 import cn.syq.puffer.dao.sql.entity.ModelProject;
-import org.springframework.stereotype.Service;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import java.util.Optional;
 
@@ -17,4 +17,6 @@ public interface ProjectDomainService {
     long addProjectHis(String label, String description, ModelProject modelProject);
 
     void updateById(long id, Optional<Long> hisId, Optional<Long> deployId);
+
+    Page<ModelProject> listAllProjects(Page<ModelProject> page);
 }
