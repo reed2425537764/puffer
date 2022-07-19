@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -42,8 +43,9 @@ public class ProjectController {
     @GetMapping
     @Valid
     public ManagerResponse<PageVo<ProjectMetaResponse>> listProjects(@RequestParam(required = false, defaultValue = "1") @Length(min = 1, max = 999) int pageNo,
-                                                                     @RequestParam(required = false, defaultValue = "30") @Length(min = 1, max = 999) int pageSize) {
-        Page<ModelProject> page = projectService.listProjects(pageNo, pageSize);
+                                                                     @RequestParam(required = false, defaultValue = "30") @Length(min = 1, max = 999) int pageSize,
+                                                                     @RequestParam(required = false) @Length(min = 1, max = 60) String label) {
+        Page<ModelProject> page = projectService.listProjects(pageNo, pageSize, Optional.ofNullable(label));
 
         PageVo<ProjectMetaResponse> pageVo = PageVo.<ProjectMetaResponse>builder()
                 .pageNo((int) page.getCurrent())
@@ -64,6 +66,6 @@ public class ProjectController {
     }
 
     public static void main(String[] args) {
-        System.out.println(Math.ceil(((double) 7)/2));
+        System.out.println(Math.ceil(((double) 7) / 2));
     }
 }

@@ -75,7 +75,9 @@ public class ProjectDomainServiceImpl implements ProjectDomainService {
     }
 
     @Override
-    public Page<ModelProject> listAllProjects(Page<ModelProject> page) {
-        return modelProjectMapper.selectPage(page, null);
+    public Page<ModelProject> listAllProjects(Page<ModelProject> page, Optional<String> label) {
+        LambdaQueryWrapper<ModelProject> wrapper = new LambdaQueryWrapper<>();
+        wrapper.like(label.isPresent(), ModelProject::getLabel, label.orElse(null));
+        return modelProjectMapper.selectPage(page, wrapper);
     }
 }

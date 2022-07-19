@@ -18,5 +18,5 @@ public interface ProjectDomainService {
 
     void updateById(long id, Optional<Long> hisId, Optional<Long> deployId);
 
-    Page<ModelProject> listAllProjects(Page<ModelProject> page);
+    Page<ModelProject> listAllProjects(Page<ModelProject> page, Optional<String> label);
 }
