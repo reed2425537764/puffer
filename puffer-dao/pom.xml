@@ -12,8 +12,7 @@
     <artifactId>puffer-dao</artifactId>
 
     <properties>
-        <maven.compiler.source>10</maven.compiler.source>
-        <maven.compiler.target>10</maven.compiler.target>
+        <pmd.skip>true</pmd.skip>
     </properties>
 
     <dependencies>
