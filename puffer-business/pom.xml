@@ -12,7 +12,7 @@
     <artifactId>puffer-business</artifactId>
 
     <properties>
-
+        <kie.version>6.5.0.Final</kie.version>
     </properties>
 
     <dependencies>
@@ -21,5 +21,113 @@
             <artifactId>puffer-dao</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-api</artifactId>
+            <version>${kie.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-core</artifactId>
+            <version>${kie.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-compiler</artifactId>
+            <version>${kie.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-flow</artifactId>
+            <version>${kie.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-flow</artifactId>
+            <version>${kie.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-flow-builder</artifactId>
+            <version>${kie.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-bpmn2</artifactId>
+            <version>${kie.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-runtime-manager</artifactId>
+            <version>${kie.version}</version>
+            <exclusions>
+                <!--<exclusion>
+                    <groupId>org.jbpm</groupId>
+                    <artifactId>jbpm-human-task-core</artifactId>
+                </exclusion>-->
+                <!--<exclusion>
+                    <groupId>org.jbpm</groupId>
+                    <artifactId>jbpm-human-task-workitems</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jbpm</groupId>
+                    <artifactId>jbpm-human-task-audit</artifactId>
+                </exclusion>-->
+                <!--<exclusion>
+                    <groupId>org.jbpm</groupId>
+                    <artifactId>jbpm-human-task-jpa</artifactId>
+                </exclusion>-->
+                <!--<exclusion>
+                    <groupId>org.jbpm</groupId>
+                    <artifactId>jbpm-persistence-jpa</artifactId>
+                </exclusion>-->
+                <!--<exclusion>
+                    <groupId>org.jbpm</groupId>
+                    <artifactId>jbpm-audit</artifactId>
+                </exclusion>-->
+                <!--<exclusion>
+                    <groupId>org.drools</groupId>
+                    <artifactId>drools-persistence-jpa</artifactId>
+                </exclusion>-->
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-workitems</artifactId>
+            <version>${kie.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-io</groupId>
+                    <artifactId>commons-io</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>commons-compress</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.cxf</groupId>
+                    <artifactId>cxf-rt-transports-http</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-executor</artifactId>
+            <version>${kie.version}</version>
+        </dependency>
     </dependencies>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.kie</groupId>
+                <artifactId>kie-maven-plugin</artifactId>
+                <version>${kie.version}</version>
+            </plugin>
+        </plugins>
+    </build>
 </project>
