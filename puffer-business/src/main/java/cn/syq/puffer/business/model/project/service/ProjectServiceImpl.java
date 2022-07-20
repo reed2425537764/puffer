@@ -39,8 +39,13 @@ public class ProjectServiceImpl implements ProjectService{
     }
 
     @Override
-    public Page<ModelProject> listProjects(int pageNo, int pageSize) {
+    public Page<ModelProject> listProjects(int pageNo, int pageSize, Optional<String> labelOpt) {
         Page<ModelProject> page = new Page<>(pageNo, pageSize);
-        return projectDomainService.listAllProjects(page);
+
+        return projectDomainService.listAllProjects(page, labelOpt/*labelOpt.map(label -> String.format("%%%s%%", label))*/);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(String.format("%%%s%%", "label"));
     }
 }
