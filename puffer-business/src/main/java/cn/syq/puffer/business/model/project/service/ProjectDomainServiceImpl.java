@@ -1,5 +1,7 @@
 package cn.syq.puffer.business.model.project.service;
 
+import cn.syq.puffer.business.exception.ManagerErrorCode;
+import cn.syq.puffer.business.exception.ManagerException;
 import cn.syq.puffer.business.model.api.HisType;
 import cn.syq.puffer.business.model.api.ProjectDomainService;
 import cn.syq.puffer.business.utils.ModelUtils;
@@ -9,6 +11,7 @@ import cn.syq.puffer.dao.sql.mapper.ModelProjectHisMapper;
 import cn.syq.puffer.dao.sql.mapper.ModelProjectMapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.stereotype.Service;
@@ -49,7 +52,7 @@ public class ProjectDomainServiceImpl implements ProjectDomainService {
     }
 
     @Override
-    public long addProjectHis(String label, String description, ModelProject modelProject) {
+    public ModelProjectHis addProjectHis(String label, String description, ModelProject modelProject) {
         ModelProjectHis modelProjectHis = new ModelProjectHis();
         BeanCopier beanCopier = BeanCopier.create(ModelProject.class, ModelProjectHis.class, false);
         beanCopier.copy(modelProject, modelProjectHis, null);
@@ -58,7 +61,7 @@ public class ProjectDomainServiceImpl implements ProjectDomainService {
         modelProjectHis.setType(HisType.A.name());
         modelProjectHis.setForeignId(modelProject.getId());
         modelProjectHisMapper.insert(modelProjectHis);
-        return modelProjectHis.getId();
+        return modelProjectHis;
     }
 
     @Override
@@ -79,5 +82,14 @@ public class ProjectDomainServiceImpl implements ProjectDomainService {
         LambdaQueryWrapper<ModelProject> wrapper = new LambdaQueryWrapper<>();
         wrapper.like(label.isPresent(), ModelProject::getLabel, label.orElse(null));
         return modelProjectMapper.selectPage(page, wrapper);
+    }
+
+    @Override
+    public ModelProject checkProjectExist(Long id) {
+        final ModelProject project = modelProjectMapper.selectById(id);
+        if (Objects.isNull(project)) {
+            throw new ManagerException(ManagerErrorCode.E20);
+        }
+        return project;
     }
 }

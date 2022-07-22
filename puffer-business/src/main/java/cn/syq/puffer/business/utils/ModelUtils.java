@@ -1,5 +1,6 @@
 package cn.syq.puffer.business.utils;
 
+import cn.syq.puffer.business.dict.YNEnum;
 import java.util.UUID;
 
 /**
@@ -14,6 +15,10 @@ public class ModelUtils {
 
     public static String generateModelName() {
         return UUID.randomUUID().toString().replaceAll("-", "").toLowerCase();
+    }
+    
+    public static Boolean boolStr2Bool(String bool){
+        return YNEnum.Y.getName().equalsIgnoreCase(bool);
     }
 
     public static void main(String[] args) {
