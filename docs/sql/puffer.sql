@@ -413,3 +413,34 @@ create table if not exists model_rule_his
     )
     comment '模型-规则';
 
+-- puffer.deploy_rs_field definition
+
+CREATE TABLE `deploy_rs_field` (
+  `ID` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `DEPLOY_ID` bigint(20) NOT NULL COMMENT '外键-部署ID',
+  `RS_HIS_ID` bigint(20) NOT NULL COMMENT '外键-规则集历史ID',
+  `DO_HIS_ID` bigint(20) NOT NULL COMMENT '外键-数据对象历史ID',
+  `FIELD_HIS_ID` bigint(20) NOT NULL COMMENT '外键-字段历史ID',
+  `RULE_DEPS` char(1) NOT NULL COMMENT '该字段是否被规则依赖',
+  `RULE_HIS_IDS` text COMMENT '字段被规则依赖的历史ID',
+  `CUSTOM_DEPS` char(1) NOT NULL COMMENT 'Y-是N-否D-默认 该字段是否是业务自定义的依赖. D-使用规则依赖;N-不触发该依赖;Y-不管是否有规则依赖,必须触发因为是业务自定义的依赖',
+  `CREATE_TIME` timestamp NOT NULL COMMENT '创建时间',
+  PRIMARY KEY (`ID`)
+) COMMENT='部署-规则集与字段关系';
+
+
+-- puffer.model_rs_field definition
+
+CREATE TABLE `model_rs_field` (
+  `ID` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `PROJECT_ID` bigint(20) NOT NULL COMMENT '外键-项目ID',
+  `RS_ID` bigint(20) NOT NULL COMMENT '外键-规则集ID',
+  `DO_ID` bigint(20) NOT NULL COMMENT '外键-数据对象ID',
+  `FIELD_ID` bigint(20) NOT NULL COMMENT '外键-字段ID',
+  `RULE_DEPS` char(1) NOT NULL COMMENT '该字段是否被规则依赖',
+  `RULE_IDS` text NOT NULL COMMENT '规则list',
+  `CUSTOM_DEPS` char(1) NOT NULL,
+  `CREATE_UID` int(11) NOT NULL COMMENT '外键-用户ID',
+  `CREATE_TIME` timestamp NOT NULL COMMENT '创建时间',
+  PRIMARY KEY (`ID`)
+) COMMENT='模型-规则集与字段关系';
