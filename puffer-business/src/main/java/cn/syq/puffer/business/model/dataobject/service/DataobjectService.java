@@ -6,6 +6,8 @@ package cn.syq.puffer.business.model.dataobject.service;
 
 
 import cn.syq.puffer.business.model.dataobject.api.CatalogMeta;
+import cn.syq.puffer.business.model.dataobject.api.DataObjectMeta;
+import cn.syq.puffer.dao.sql.entity.ModelDo;
 import java.util.List;
 
 
@@ -21,4 +23,10 @@ public interface DataobjectService {
     List<CatalogMeta> listDataobjectCatalogs(Long projectId, String label);
     
     CatalogMeta getDataobjectCatalog(Long projectId, Long doCataId);
+    
+    CatalogMeta editCatalogMeta(Long projectId, Long doCataId, String label);
+    
+    DataObjectMeta addDataObject(ModelDo modelDo);
+    
+     
 }

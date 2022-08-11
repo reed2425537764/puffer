@@ -7,7 +7,10 @@ package cn.syq.puffer.manager.model.controller;
 import cn.syq.puffer.business.model.dataobject.service.DataobjectService;
 import cn.syq.puffer.manager.model.api.ManagerResponse;
 import cn.syq.puffer.business.model.dataobject.api.CatalogMeta;
+import cn.syq.puffer.business.model.dataobject.api.DataObjectMeta;
+import cn.syq.puffer.manager.model.api.dataobject.CatalogEdit;
 import cn.syq.puffer.manager.model.api.dataobject.CatalogNew;
+import cn.syq.puffer.manager.model.api.dataobject.DataObjectNew;
 import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
@@ -15,6 +18,7 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,5 +53,16 @@ public class DataObjectController {
     @Valid
     public ManagerResponse<CatalogMeta> getCatalogMeta(@PathVariable("projectId") @Min(1L) Long projectId, @PathVariable("doCataId") @Min(1L) Long doCataId){
         return ManagerResponse.buildSuccess(dataobjectService.getDataobjectCatalog(projectId, doCataId));
+    }
+    
+    @PostMapping("/{projectId:\\d+}/dataobject/catalog/{id:\\d+}/meta")
+    @Valid
+    public ManagerResponse<CatalogMeta> editCatalogMeta(@Valid @RequestBody CatalogEdit catalogEdit){
+        return ManagerResponse.buildSuccess(dataobjectService.editCatalogMeta(catalogEdit.getProjectId(), catalogEdit.getId(), catalogEdit.getLabel()));
+    }
+    
+    @PutMapping("/{projectId:\\d+}/dataobject")
+    public ManagerResponse<DataObjectMeta> addDataObject(@Valid @RequestBody DataObjectNew dataObjectNew){
+        return null;
     }
 }

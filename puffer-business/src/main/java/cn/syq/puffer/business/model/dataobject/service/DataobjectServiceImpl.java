@@ -9,6 +9,8 @@ import cn.syq.puffer.business.exception.ManagerException;
 import cn.syq.puffer.business.model.api.DataobjectDomainService;
 import cn.syq.puffer.business.model.api.ProjectDomainService;
 import cn.syq.puffer.business.model.dataobject.api.CatalogMeta;
+import cn.syq.puffer.business.model.dataobject.api.DataObjectMeta;
+import cn.syq.puffer.dao.sql.entity.ModelDo;
 import cn.syq.puffer.dao.sql.entity.ModelDoCatalog;
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
@@ -65,7 +67,6 @@ public class DataobjectServiceImpl implements DataobjectService{
 
     @Override
     public CatalogMeta getDataobjectCatalog(Long projectId, Long doCataId) {
-        CatalogMeta catalogMeta = new CatalogMeta();
         
         projectDomainService.checkProjectExist(projectId);
         
@@ -75,16 +76,37 @@ public class DataobjectServiceImpl implements DataobjectService{
             throw new ManagerException(ManagerErrorCode.E20);
         }
         
-        catalogMeta.setId(modelDoCatalog.getId());
-        catalogMeta.setName(modelDoCatalog.getName());
-        catalogMeta.setLabel(modelDoCatalog.getLabel());
-        catalogMeta.setProjectId(modelDoCatalog.getProjectId());
-        catalogMeta.setCreateUid(modelDoCatalog.getCreateUid());
-        catalogMeta.setCreateTime(modelDoCatalog.getCreateTime());
-        catalogMeta.setUpdateUid(modelDoCatalog.getUpdateUid());
-        catalogMeta.setUpdateTime(modelDoCatalog.getUpdateTime());
+        return dataobjectDomainService.buildCatalogMeta(modelDoCatalog);
+    }
+
+    @Override
+    public CatalogMeta editCatalogMeta(Long projectId, Long doCataId, String label) {
         
-        return catalogMeta;
+        projectDomainService.checkProjectExist(projectId);
+        ModelDoCatalog modelDoCatalog = dataobjectDomainService.checkDoCatalogExist(doCataId);
+        
+        if (Objects.equals(label, modelDoCatalog.getLabel())) {
+            return dataobjectDomainService.buildCatalogMeta(modelDoCatalog);
+        }
+        
+        if (Objects.nonNull(dataobjectDomainService.queryByLabelAndProjectId(projectId, label))) {
+            throw new ManagerException(ManagerErrorCode.E30);
+        }
+        
+        dataobjectDomainService.updateCatalog(doCataId, label);
+        modelDoCatalog.setLabel(label);
+        
+        return dataobjectDomainService.buildCatalogMeta(modelDoCatalog);
+    }
+
+    @Override
+    public DataObjectMeta addDataObject(ModelDo modelDo) {
+        
+        projectDomainService.checkProjectExist(modelDo.getProjectId());
+        dataobjectDomainService.checkDoCatalogExist(modelDo.getCatalogId());
+        
+        
+        return dataobjectDomainService.builDataObjectMeta(modelDo);
     }
     
 }
