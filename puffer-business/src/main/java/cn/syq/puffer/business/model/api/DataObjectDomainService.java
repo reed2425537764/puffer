@@ -7,12 +7,16 @@ package cn.syq.puffer.business.model.api;
 import cn.syq.puffer.business.exception.ManagerErrorCode;
 import cn.syq.puffer.business.exception.ManagerException;
 import cn.syq.puffer.business.model.dataobject.api.CatalogMeta;
+import cn.syq.puffer.business.model.dataobject.api.DataObject;
 import cn.syq.puffer.business.model.dataobject.api.DataObjectMeta;
+import cn.syq.puffer.business.model.dataobject.api.DoCatalog;
 import cn.syq.puffer.dao.sql.entity.ModelDo;
 import cn.syq.puffer.dao.sql.entity.ModelDoCatalog;
 import cn.syq.puffer.dao.sql.entity.ModelDoHis;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 
 /**
@@ -20,7 +24,7 @@ import java.util.function.Function;
  * @author shiyuqin
  * @date 2022/8/5 17:40
  */
-public interface DataobjectDomainService {
+public interface DataObjectDomainService {
     
     ModelDoCatalog queryByLabelAndProjectId(Long projectId, String label);
     
@@ -43,12 +47,20 @@ public interface DataobjectDomainService {
     ModelDo queryDoByNameAndProjectId(Long projectId, String name);
     
     ModelDo queryDoByLabelAndProjectId(Long projectId, String label);
+
+    List<ModelDo> queryDoByProjectId(Long projectId);
     
     ModelDo addDataObject(ModelDo modelDo);
+
+    int updateModelDo(ModelDo modelDo);
+
+    DataObject modelDo2DataObject(ModelDo modelDo);
     
     ModelDoHis addDataHisObject(ModelDo modelDo);
+
+    ModelDo getSystemDo(Long projectId);
     
-    String getDoTypeInner(String outer);
+    String getInnerDoType(String outer);
     
     Function<String, String> DO_TYPE_2_INNER = outer -> {
         switch (outer) {
@@ -66,4 +78,10 @@ public interface DataobjectDomainService {
                 throw new ManagerException(ManagerErrorCode.E30);
         }
     };
+
+    Set<String> getInnerDoTypes(String outerDoTypes);
+
+    List<DoCatalog> listDataObjects(Long projectId, Set<String> doTypes, boolean includeFields);
+
+    Map<Long, List<DataObject>> listDoGroupByCatalogId(List<ModelDo> modelDos, Set<String> doTypes);
 }

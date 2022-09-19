@@ -4,18 +4,23 @@
  */
 package cn.syq.puffer.manager.model.controller;
 
-import cn.syq.puffer.business.model.dataobject.service.DataobjectService;
+import cn.syq.puffer.business.model.dataobject.api.DoCatalog;
+import cn.syq.puffer.business.model.dataobject.service.DataObjectService;
 import cn.syq.puffer.manager.model.api.ManagerResponse;
 import cn.syq.puffer.business.model.dataobject.api.CatalogMeta;
 import cn.syq.puffer.business.model.dataobject.api.DataObjectMeta;
+import cn.syq.puffer.dao.sql.entity.ModelDo;
 import cn.syq.puffer.manager.model.api.dataobject.CatalogEdit;
 import cn.syq.puffer.manager.model.api.dataobject.CatalogNew;
 import cn.syq.puffer.manager.model.api.dataobject.DataObjectNew;
 import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.Pattern;
+
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,7 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class DataObjectController {
     
     @Autowired
-    private DataobjectService dataobjectService;
+    private DataObjectService dataobjectService;
     
     @PutMapping("/{projectId:\\d+}/dataobject/catalog")
     public ManagerResponse<CatalogMeta> addDataobjectCatalog(@Valid @RequestBody CatalogNew catalogNew){    
@@ -63,6 +68,17 @@ public class DataObjectController {
     
     @PutMapping("/{projectId:\\d+}/dataobject")
     public ManagerResponse<DataObjectMeta> addDataObject(@Valid @RequestBody DataObjectNew dataObjectNew){
-        return null;
+        ModelDo modelDo = new ModelDo();
+        BeanCopier beanCopier = BeanCopier.create(DataObjectNew.class, ModelDo.class, false);
+        beanCopier.copy(dataObjectNew, modelDo, null);
+        modelDo.setClassName(dataObjectNew.getName());
+        return ManagerResponse.buildSuccess(dataobjectService.addDataObject(modelDo, dataObjectNew.getMethod()));
+    }
+
+    @GetMapping("/{projectId:\\d+}/dataobject")
+    @Valid
+    public ManagerResponse<List<CatalogMeta>> listDataObjects(@PathVariable("projectId") @Min(1L) Long projectId,
+                                                            @RequestParam(name = "doType", defaultValue = "11111") @Pattern(regexp = "[01]{5}") String doType) {
+        return ManagerResponse.buildSuccess(dataobjectService.listDataObjects(projectId, doType, false));
     }
 }

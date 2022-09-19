@@ -4,35 +4,23 @@
  */
 package cn.syq.puffer.business.model.dataobject.api;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 import com.google.common.collect.Lists;
+import java.util.List;
 import lombok.Data;
 
 /**
  *
  * @author shiyuqin
- * @date 2022/8/5 17:47
+ * @date 2022/8/15 17:21
  */
 @Data
-public class CatalogMeta {
+public class DoCatalog {
     
     private Long id;
-    
+
     private String name;
-    
+
     private String label;
     
-    private Long projectId;
-
-    private Integer createUid;
-    
-    private LocalDateTime createTime;
-    
-    private Integer updateUid;
-
-    private LocalDateTime updateTime;
-
-    private List<DataObjectMeta> dataObjectMetas;
+    private List<DataObject> dataObjects = Lists.newArrayList();
 }

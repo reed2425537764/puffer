@@ -7,22 +7,24 @@ package cn.syq.puffer.business.model.dataobject.service;
 import cn.hutool.core.util.StrUtil;
 import cn.syq.puffer.business.exception.ManagerErrorCode;
 import cn.syq.puffer.business.exception.ManagerException;
-import cn.syq.puffer.business.model.api.DataobjectDomainService;
-import cn.syq.puffer.business.model.api.ProjectDomainService;
+import cn.syq.puffer.business.model.api.DataObjectDomainService;
 import cn.syq.puffer.business.model.dataobject.api.DataObjectAppend;
 import cn.syq.puffer.business.model.dataobject.api.DataObjectMeta;
 import cn.syq.puffer.dao.sql.entity.ModelDo;
+import cn.syq.puffer.dao.sql.entity.ModelDoHis;
 import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author shiyuqin
  */
+@Service
 public class DataObjectAppend1 implements DataObjectAppend{
 
     @Autowired
-    private DataobjectDomainService dataobjectDomainService;
+    private DataObjectDomainService dataobjectDomainService;
     
     
     @Override
@@ -42,6 +44,11 @@ public class DataObjectAppend1 implements DataObjectAppend{
         }
         
         modelDo = dataobjectDomainService.addDataObject(modelDo);
+        ModelDoHis modelDoHis = dataobjectDomainService.addDataHisObject(modelDo);
+        ModelDo updateModelDo = new ModelDo();
+        updateModelDo.setId(modelDo.getId());
+        updateModelDo.setHisId(modelDoHis.getId());
+        dataobjectDomainService.updateModelDo(updateModelDo);
         
         return dataobjectDomainService.builDataObjectMeta(modelDo);
     }

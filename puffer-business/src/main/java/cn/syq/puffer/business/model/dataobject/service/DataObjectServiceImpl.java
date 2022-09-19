@@ -6,31 +6,37 @@ package cn.syq.puffer.business.model.dataobject.service;
 
 import cn.syq.puffer.business.exception.ManagerErrorCode;
 import cn.syq.puffer.business.exception.ManagerException;
-import cn.syq.puffer.business.model.api.DataobjectDomainService;
+import cn.syq.puffer.business.model.api.DataObjectDomainService;
 import cn.syq.puffer.business.model.api.ProjectDomainService;
-import cn.syq.puffer.business.model.dataobject.api.CatalogMeta;
-import cn.syq.puffer.business.model.dataobject.api.DataObjectMeta;
+import cn.syq.puffer.business.model.dataobject.api.*;
+import cn.syq.puffer.business.model.field.api.FieldMeta;
+import cn.syq.puffer.business.utils.StringTools;
 import cn.syq.puffer.dao.sql.entity.ModelDo;
 import cn.syq.puffer.dao.sql.entity.ModelDoCatalog;
 import com.google.common.collect.Lists;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author shiyuqin
  * @date 2022/8/5 17:43
  */
-public class DataobjectServiceImpl implements DataobjectService{
+@Service
+public class DataObjectServiceImpl implements DataObjectService {
 
     @Autowired
-    private DataobjectDomainService dataobjectDomainService;
+    private DataObjectDomainService dataobjectDomainService;
     
     @Autowired
     private ProjectDomainService projectDomainService;
+    
+    @Autowired
+    private Map<String, DataObjectAppend> dataObjectAppendMap;
     
     @Override
     public CatalogMeta addDataobjectCatalog(Long projectId, String label) {
@@ -100,13 +106,55 @@ public class DataobjectServiceImpl implements DataobjectService{
     }
 
     @Override
-    public DataObjectMeta addDataObject(ModelDo modelDo) {
+    public DataObjectMeta addDataObject(ModelDo modelDo, String method) {
         
         projectDomainService.checkProjectExist(modelDo.getProjectId());
         dataobjectDomainService.checkDoCatalogExist(modelDo.getCatalogId());
         
-        
-        return dataobjectDomainService.builDataObjectMeta(modelDo);
+        DataObjectAppend dataObjectAppend = dataObjectAppendMap.get(StringTools.firstLetter2LowerCase(DataObjectAppend.class.getSimpleName())+method);
+        if (Objects.isNull(dataObjectAppend)) {
+            throw new ManagerException(ManagerErrorCode.E30);
+        }
+
+        return dataObjectAppend.addDataObject(modelDo);
     }
-    
+
+    @Override
+    public List<CatalogMeta> listDataObjects(Long projectId, String doType, boolean includeFields) {
+
+        projectDomainService.checkProjectExist(projectId);
+        Set<String> doTypes = dataobjectDomainService.getInnerDoTypes(doType);
+
+        List<DoCatalog> catalogs = dataobjectDomainService.listDataObjects(projectId, doTypes, includeFields);
+
+        return catalogs.stream().map(catalog -> {
+            CatalogMeta catalogMeta = new CatalogMeta();
+            catalogMeta.setId(catalog.getId());
+            catalog.setLabel(catalog.getLabel());
+
+            catalogMeta.setDataObjectMetas(catalog.getDataObjects().stream().map(dataObject -> {
+                DataObjectMeta dataObjectMeta = new DataObjectMeta();
+                dataObjectMeta.setId(dataObject.getId());
+                dataObjectMeta.setName(dataObject.getName());
+                dataObjectMeta.setLabel(dataObject.getLabel());
+                dataObjectMeta.setType(dataObject.getDoType());
+                if (includeFields) {
+                    dataObjectMeta.setFieldMetas(Objects.isNull(dataObject.getFields()) ? Lists.newArrayList() :
+                            dataObject.getFields().stream().map(field -> {
+                                FieldMeta fieldMeta = new FieldMeta();
+                                fieldMeta.setId(field.getId());
+                                fieldMeta.setName(field.getName());
+                                fieldMeta.setLabel(field.getLabel());
+                                fieldMeta.setType(field.getClassType());
+                                fieldMeta.setListFlag(field.isListFlag());
+                                return fieldMeta;
+                            }).collect(Collectors.toList()));
+                }
+                return dataObjectMeta;
+            }).collect(Collectors.toList()));
+
+            return catalogMeta;
+        }).collect(Collectors.toList());
+    }
+
 }

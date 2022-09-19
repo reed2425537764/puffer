@@ -4,8 +4,10 @@
  */
 package cn.syq.puffer.business.model.dataobject.api;
 
+import cn.syq.puffer.business.model.field.api.FieldMeta;
 import lombok.Data;
 
+import java.util.List;
 
 
 /**
@@ -34,5 +36,5 @@ public class DataObjectMeta {
     
     private Long version;
     
-    //private List<FieldMeta> fieldMetas;
+    private List<FieldMeta> fieldMetas;
 }
