@@ -120,6 +120,28 @@ public class DataObjectServiceImpl implements DataObjectService {
     }
 
     @Override
+    public DataObjectMeta getDataObjectMeta(Long projectId, Long doId) {
+
+        projectDomainService.checkProjectExist(projectId);
+        ModelDo modelDo = dataobjectDomainService.checkDoExist(Optional.of(projectId), doId);
+        ModelDoCatalog modelDoCatalog = dataobjectDomainService.queryById(modelDo.getCatalogId());
+
+        DataObjectMeta dataObjectMeta = new DataObjectMeta();
+        dataObjectMeta.setId(modelDo.getId());
+        if (Objects.nonNull(modelDoCatalog)) {
+            dataObjectMeta.setCatalogId(modelDoCatalog.getId());
+            dataObjectMeta.setCatalogLabel(modelDoCatalog.getLabel());
+        }
+        dataObjectMeta.setName(modelDo.getClassName());
+        dataObjectMeta.setLabel(modelDo.getLabel());
+        dataObjectMeta.setProjectId(modelDo.getProjectId());
+        dataObjectMeta.setType(modelDo.getDoType());
+        dataObjectMeta.setDescription(modelDo.getDescription());
+        dataObjectMeta.setVersion(modelDo.getHisId());
+        return dataObjectMeta;
+    }
+
+    @Override
     public List<CatalogMeta> listDataObjects(Long projectId, String doType, boolean includeFields) {
 
         projectDomainService.checkProjectExist(projectId);
@@ -156,5 +178,7 @@ public class DataObjectServiceImpl implements DataObjectService {
             return catalogMeta;
         }).collect(Collectors.toList());
     }
+
+
 
 }

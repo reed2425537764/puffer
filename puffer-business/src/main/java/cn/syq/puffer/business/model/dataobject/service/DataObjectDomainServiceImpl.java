@@ -142,6 +142,15 @@ public class DataObjectDomainServiceImpl implements DataObjectDomainService {
     }
 
     @Override
+    public ModelDo checkDoExist(Optional<Long> projectIdOpt, long doId) {
+        ModelDo modelDo = modelDoMapper.selectById(doId);
+        if (Objects.isNull(modelDo) || Objects.equals(modelDo.getProjectId(), projectIdOpt.orElse(modelDo.getProjectId()))) {
+            throw new ManagerException(ManagerErrorCode.E20);
+        }
+        return modelDo;
+    }
+
+    @Override
     public ModelDo queryDoByNameAndProjectId(Long projectId, String name) {
         LambdaQueryWrapper<ModelDo> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(ModelDo::getProjectId, projectId).eq(ModelDo::getClassName, name);

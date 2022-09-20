@@ -6,6 +6,7 @@ package cn.syq.puffer.manager.model.controller;
 
 import cn.syq.puffer.business.model.dataobject.api.DoCatalog;
 import cn.syq.puffer.business.model.dataobject.service.DataObjectService;
+import cn.syq.puffer.business.model.field.api.FieldMeta;
 import cn.syq.puffer.manager.model.api.ManagerResponse;
 import cn.syq.puffer.business.model.dataobject.api.CatalogMeta;
 import cn.syq.puffer.business.model.dataobject.api.DataObjectMeta;
@@ -18,6 +19,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Pattern;
 
+import cn.syq.puffer.manager.model.api.field.FieldNew;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanCopier;
@@ -81,4 +83,13 @@ public class DataObjectController {
                                                             @RequestParam(name = "doType", defaultValue = "11111") @Pattern(regexp = "[01]{5}") String doType) {
         return ManagerResponse.buildSuccess(dataobjectService.listDataObjects(projectId, doType, false));
     }
+
+    @GetMapping("/{projectId:\\d+}/dataobject/{doId:\\d+}/meta")
+    @Valid
+    public ManagerResponse<DataObjectMeta> getDataObjectMeta(@PathVariable("projectId") @Min(1L) Long projectId,
+                                                                @PathVariable("doId") @Min(1L) Long doId) {
+        return ManagerResponse.buildSuccess(dataobjectService.getDataObjectMeta(projectId, doId));
+    }
+
+
 }

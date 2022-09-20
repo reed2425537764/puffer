@@ -13,6 +13,8 @@ import cn.syq.puffer.business.model.dataobject.api.DoCatalog;
 import cn.syq.puffer.dao.sql.entity.ModelDo;
 import cn.syq.puffer.dao.sql.entity.ModelDoCatalog;
 import cn.syq.puffer.dao.sql.entity.ModelDoHis;
+import cn.syq.puffer.dao.sql.entity.ModelField;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -43,7 +45,9 @@ public interface DataObjectDomainService {
     int updateCatalog(Long doCataId, String label);
     
     DataObjectMeta builDataObjectMeta(ModelDo modelDo);
-    
+
+    ModelDo checkDoExist(Optional<Long> projectIdOpt, long doId);
+
     ModelDo queryDoByNameAndProjectId(Long projectId, String name);
     
     ModelDo queryDoByLabelAndProjectId(Long projectId, String label);
