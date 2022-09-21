@@ -23,4 +23,8 @@ public interface FieldService {
     FieldMeta modelField2FieldMeta(ModelField modelField);
 
     FieldMeta getFieldMeta(long projectId, long doId, long fieldId);
+
+    FieldMeta editField(ModelField modelField);
+
+    void deleteField(ModelField modelField);
 }

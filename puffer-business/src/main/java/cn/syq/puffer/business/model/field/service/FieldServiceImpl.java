@@ -4,9 +4,7 @@ import cn.syq.puffer.business.dict.DataType;
 import cn.syq.puffer.business.dict.YNEnum;
 import cn.syq.puffer.business.exception.ManagerErrorCode;
 import cn.syq.puffer.business.exception.ManagerException;
-import cn.syq.puffer.business.model.api.DataObjectDomainService;
-import cn.syq.puffer.business.model.api.FieldDomainService;
-import cn.syq.puffer.business.model.api.ProjectDomainService;
+import cn.syq.puffer.business.model.api.*;
 import cn.syq.puffer.business.model.dataobject.api.DataObjectAppend;
 import cn.syq.puffer.business.model.field.api.FieldMeta;
 import cn.syq.puffer.business.model.field.api.ListField;
@@ -60,7 +58,7 @@ public class FieldServiceImpl implements FieldService{
         }
 
         ModelField modelFieldNew = fieldDomainService.addField(modelField);
-        ModelFieldHis modelFieldHis = fieldDomainService.addFieldHis(modelField);
+        ModelFieldHis modelFieldHis = fieldDomainService.addFieldHis(modelField, His.of(HisType.A, "新增"));
         ModelField modelFieldUpdate = new ModelField();
         modelFieldUpdate.setId(modelFieldNew.getId());
         modelFieldUpdate.setHisId(modelFieldHis.getId());
@@ -141,5 +139,72 @@ public class FieldServiceImpl implements FieldService{
         fieldMeta.setId(modelField.getId());
 //        fieldMeta.setType(DataType.);
         return fieldMeta;
+    }
+
+    @Override
+    public FieldMeta editField(ModelField modelField) {
+
+        projectDomainService.checkProjectExist(modelField.getProjectId());
+        dataobjectDomainService.checkDoExist(Optional.of(modelField.getProjectId()), modelField.getDoId());
+        ModelField modelFieldOld = fieldDomainService.checkFieldExist(modelField.getProjectId(), modelField.getDoId(), modelField.getId());
+
+        ModelField modelFieldNew = new ModelField();
+        modelFieldNew.setId(modelFieldOld.getId());
+        boolean flag = false;
+
+        if (Objects.nonNull(modelField.getName()) && !modelField.getName().equalsIgnoreCase(modelFieldOld.getName())) {
+            ModelField modelFieldByName = fieldDomainService.queryByName(modelField.getProjectId(), modelField.getDoId(), modelField.getName());
+            if (Objects.nonNull(modelFieldByName) && modelFieldByName.getName().equals(modelField.getName())) {
+                throw new ManagerException(ManagerErrorCode.E20);
+            }
+            modelFieldNew.setName(modelField.getName());
+            flag = true;
+        }
+
+        if (Objects.nonNull(modelField.getLabel()) && !modelField.getLabel().equalsIgnoreCase(modelFieldOld.getLabel())) {
+            ModelField modelFieldByLable = fieldDomainService.queryByLabel(modelField.getProjectId(), modelField.getDoId(), modelField.getLabel());
+            if (Objects.nonNull(modelFieldByLable)) {
+                throw new ManagerException(ManagerErrorCode.E20);
+            }
+            modelFieldNew.setLabel(modelField.getLabel());
+            flag = true;
+        }
+
+        String typeInner = DataType.FILE_CLASS_TYPE_2_INNER.apply(modelField.getClassType());
+        if (Objects.nonNull(modelField.getClassType()) &&
+                !modelFieldOld.getClassType().equalsIgnoreCase(typeInner)) {
+            modelFieldNew.setClassType(typeInner);
+            flag = true;
+        }
+
+        if (Objects.nonNull(modelField.getListFlag()) && !modelFieldOld.getListFlag().equalsIgnoreCase(modelField.getListFlag())) {
+            modelFieldNew.setListFlag(modelField.getListFlag());
+            flag = true;
+        }
+
+        if (Objects.nonNull(modelField.getDescription()) && Objects.equals(modelFieldOld.getDescription(), modelField.getDescription())) {
+            modelFieldNew.setDescription(modelField.getDescription());
+        }
+
+        if (flag) {
+            //TODO dependency
+        }
+
+        ModelFieldHis modelFieldHis = fieldDomainService.addFieldHis(modelFieldNew, His.of(HisType.U, "修改"));
+        modelFieldNew.setHisId(modelFieldHis.getId());
+        fieldDomainService.updateModelField(modelFieldNew);
+        FieldMeta fieldMeta = new FieldMeta();
+        fieldMeta.setId(modelFieldNew.getId());
+        return fieldMeta;
+    }
+
+    @Override
+    public void deleteField(ModelField modelField) {
+        projectDomainService.checkProjectExist(modelField.getProjectId());
+        dataobjectDomainService.checkDoExist(Optional.of(modelField.getProjectId()), modelField.getDoId());
+        ModelField modelFieldOld = fieldDomainService.checkFieldExist(modelField.getProjectId(), modelField.getDoId(), modelField.getId());
+
+        //TODO dependency
+
     }
 }

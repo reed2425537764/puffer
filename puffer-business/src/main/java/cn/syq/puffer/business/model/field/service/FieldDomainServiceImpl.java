@@ -4,6 +4,8 @@ import cn.syq.puffer.business.dict.DataType;
 import cn.syq.puffer.business.exception.ManagerErrorCode;
 import cn.syq.puffer.business.exception.ManagerException;
 import cn.syq.puffer.business.model.api.FieldDomainService;
+import cn.syq.puffer.business.model.api.His;
+import cn.syq.puffer.business.model.api.HisType;
 import cn.syq.puffer.business.model.dataobject.api.SystemDo;
 import cn.syq.puffer.business.model.field.api.Field;
 import cn.syq.puffer.business.utils.StringTools;
@@ -99,6 +101,12 @@ public class FieldDomainServiceImpl implements FieldDomainService {
     }
 
     @Override
+    public void deleteField(ModelField modelField) {
+        addFieldHis(modelField, His.of(HisType.D, "删除"));
+        modelFieldMapper.deleteById(modelField.getId());
+    }
+
+    @Override
     public ModelField getSystemDoField(Long projectId, Long fieldId) {
         ModelField modelField = new ModelField();
         modelField.setId(fieldId);
@@ -113,11 +121,13 @@ public class FieldDomainServiceImpl implements FieldDomainService {
     }
 
     @Override
-    public ModelFieldHis addFieldHis(ModelField modelField) {
+    public ModelFieldHis addFieldHis(ModelField modelField, His his) {
         ModelFieldHis modelFieldHis = new ModelFieldHis();
         BeanCopier beanCopier = BeanCopier.create(ModelField.class, ModelFieldHis.class, false);
         beanCopier.copy(modelField, modelFieldHis, null);
         modelFieldHis.setForeignId(modelField.getId());
+        modelFieldHis.setType(his.getType().name());
+        modelFieldHis.setComment(his.getRemark());
         modelFieldHisMapper.insert(modelFieldHis);
         return modelFieldHis;
     }

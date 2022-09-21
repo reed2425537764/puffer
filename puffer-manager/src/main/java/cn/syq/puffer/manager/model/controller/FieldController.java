@@ -5,6 +5,8 @@ import cn.syq.puffer.business.model.field.service.FieldService;
 import cn.syq.puffer.dao.sql.entity.ModelField;
 import cn.syq.puffer.manager.model.api.ManagerResponse;
 import cn.syq.puffer.manager.model.api.PageVo;
+import cn.syq.puffer.manager.model.api.field.FieldDelete;
+import cn.syq.puffer.manager.model.api.field.FieldEdit;
 import cn.syq.puffer.manager.model.api.field.FieldNew;
 import cn.syq.puffer.manager.model.api.project.ProjectMetaResponse;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -73,5 +75,20 @@ public class FieldController {
                                                    @PathVariable("doId") @Min(1L) Long doId,
                                                    @PathVariable("fieldId") @Min(1L) Long fieldId) {
         return ManagerResponse.buildSuccess(fieldService.getFieldMeta(projectId, doId, fieldId));
+    }
+
+    @PostMapping("/{projectId:\\d+}/dataobject/{doId:\\d+}/field/{fieldId:\\d+}/meta")
+    @Valid
+    public ManagerResponse<FieldMeta> editFieldMeta(@RequestBody FieldEdit fieldEdit) {
+        ModelField modelField = new ModelField();
+        BeanCopier beanCopier = BeanCopier.create(FieldEdit.class, ModelField.class, false);
+        beanCopier.copy(fieldEdit, modelField, null);
+        return ManagerResponse.buildSuccess(fieldService.editField(modelField));
+    }
+
+    @DeleteMapping("/{projectId:\\d+}/dataobject/{doId:\\d+}/field/{fieldId:\\d+}")
+    @Valid
+    public ManagerResponse<Void> deleteField(@RequestBody FieldDelete fieldDelete) {
+        return ManagerResponse.buildSuccess(null);
     }
 }

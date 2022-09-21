@@ -32,9 +32,11 @@ public interface FieldDomainService {
 
     int updateModelField(ModelField modelField);
 
+    void deleteField(ModelField modelField);
+
     ModelField getSystemDoField(Long projectId, Long fieldId);
 
-    ModelFieldHis addFieldHis(ModelField modelField);
+    ModelFieldHis addFieldHis(ModelField modelField, His his);
 
     List<ModelField> listSystemDoFields(Long projectId);
 

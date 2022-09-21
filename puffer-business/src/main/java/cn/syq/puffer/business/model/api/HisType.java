@@ -7,4 +7,6 @@ package cn.syq.puffer.business.model.api;
 public enum HisType {
     A,
     U,
+
+    D,
 }
