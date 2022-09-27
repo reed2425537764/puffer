@@ -32,6 +32,8 @@ public interface RuleSetDomainService {
 
     ModelRs queryRsByLabel(long projectId, String label);
 
+    ModelRs checkRuleSetExist(long projectId, long rsId);
+
     List<ModelRs> listRsByCatalogId(long projectId, Optional<Long> rsCatalogId);
 
     ModelRs addRuleSet(ModelRs modelRs);

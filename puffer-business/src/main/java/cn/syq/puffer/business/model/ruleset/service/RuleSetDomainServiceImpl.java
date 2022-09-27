@@ -93,6 +93,17 @@ public class RuleSetDomainServiceImpl implements RuleSetDomainService {
     }
 
     @Override
+    public ModelRs checkRuleSetExist(long projectId, long rsId) {
+        LambdaQueryWrapper<ModelRs> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(ModelRs::getProjectId, projectId).eq(ModelRs::getId, rsId);
+        ModelRs modelRs = modelRsMapper.selectOne(wrapper);
+        if (Objects.isNull(modelRs)) {
+            throw new ManagerException(ManagerErrorCode.E20);
+        }
+        return modelRs;
+    }
+
+    @Override
     public List<ModelRs> listRsByCatalogId(long projectId, Optional<Long> rsCatalogId) {
         LambdaQueryWrapper<ModelRs> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(ModelRs::getProjectId, projectId).eq(rsCatalogId.isPresent(), ModelRs::getCatalogId, rsCatalogId.get());

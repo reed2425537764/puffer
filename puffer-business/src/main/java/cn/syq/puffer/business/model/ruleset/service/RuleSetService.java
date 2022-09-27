@@ -30,4 +30,9 @@ public interface RuleSetService {
     ModelRs addRuleSet(ModelRs modelRs);
 
     List<RsCatalog> listRuleSetMeta(long projectId, Optional<Long> rsCatalogIdOpt, boolean includeRule);
+
+    RsCatalog getRuleSetMeta(long projectId, long rsId);
+
+    RsCatalog editRuleSetMeta(ModelRs modelRs);
+
 }

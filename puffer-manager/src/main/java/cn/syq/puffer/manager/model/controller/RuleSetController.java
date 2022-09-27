@@ -130,7 +130,7 @@ public class RuleSetController {
     @GetMapping("/{projectId:\\d+}/ruleset")
     @Valid
     public ManagerResponse<List<RsCatalogMeta>> listRuleSetMeta(@PathVariable("projectId") @Min(-1L) Long projectId,
-                                                              @RequestParam(name = "rsCatalogId", required = false) Long rsCatalogId) {
+                                                                @RequestParam(name = "rsCatalogId", required = false) Long rsCatalogId) {
 
         List<RsCatalog> list = ruleSetService.listRuleSetMeta(projectId, Optional.ofNullable(rsCatalogId), false);
         return ManagerResponse.buildSuccess(list.stream().map(rsCatalog -> {
@@ -152,5 +152,36 @@ public class RuleSetController {
             }).collect(Collectors.toList()));
             return rsCatalogMeta;
         }).collect(Collectors.toList()));
+    }
+
+    @GetMapping("/{projectId:\\d+}/ruleset/{rsId:\\d+}/meta")
+    @Valid
+    public ManagerResponse<RsCatalogMeta> getRuleSetMeta(@PathVariable("projectId") @Min(-1L) Long projectId,
+                                                         @PathVariable("rsId") Long rsId) {
+
+//        RsCatalog rsCatalog = ruleSetService.getRuleSetMeta(projectId, rsId);
+//        RsCatalogMeta rsCatalogMeta = new RsCatalogMeta();
+//        rsCatalogMeta.setId(rsCatalog.getId());
+//        RuleSetMeta ruleSetMeta = new RuleSetMeta();
+//        ruleSetMeta.setId(rsCatalogMeta.getRuleSetMetas());
+//        return ManagerResponse.buildSuccess(rsCatalogMeta);
+        return null;
+    }
+
+    @PostMapping("/{projectId:\\d+}/ruleset/{rsId:\\d+}/meta")
+    @Valid
+    public ManagerResponse<RuleSetMeta> editRuleSetMeta(@RequestBody RuleSetEdit ruleSetEdit) {
+
+        ModelRs modelRs = new ModelRs();
+        modelRs.setId(ruleSetEdit.getId());
+        modelRs.setProjectId(ruleSetEdit.getProjectId());
+        modelRs.setCatalogId(ruleSetEdit.getRsCatalogId());
+        modelRs.setLabel(ruleSetEdit.getLabel());
+
+        RsCatalog rsCatalog = ruleSetService.editRuleSetMeta(modelRs);
+
+        RuleSetMeta ruleSetMeta = new RuleSetMeta();
+        ruleSetMeta.setId(rsCatalog.getId());
+        return ManagerResponse.buildSuccess(ruleSetMeta);
     }
 }

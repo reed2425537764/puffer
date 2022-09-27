@@ -156,4 +156,56 @@ public class RuleSetServiceImpl implements RuleSetService{
 
         return list;
     }
+
+    @Override
+    public RsCatalog getRuleSetMeta(long projectId, long rsId) {
+
+        projectDomainService.checkProjectExist(projectId);
+        ModelRs modelRs = ruleSetDomainService.checkRuleSetExist(projectId, rsId);
+        ModelRsCatalog modelRsCatalog = ruleSetDomainService.checkRsCatalogExist(projectId, modelRs.getCatalogId());
+
+        RsCatalog rsCatalog = new RsCatalog();
+        rsCatalog.setId(modelRsCatalog.getId());
+        rsCatalog.setName(modelRsCatalog.getName());
+        rsCatalog.setRuleSets(Collections.singletonList(ruleSetDomainService.modelRs2Rs(modelRs)));
+        return rsCatalog;
+    }
+
+    @Override
+    public RsCatalog editRuleSetMeta(ModelRs modelRs) {
+        projectDomainService.checkProjectExist(modelRs.getProjectId());
+        ModelRs modelRsOld = ruleSetDomainService.checkRuleSetExist(modelRs.getProjectId(), modelRs.getId());
+
+        ModelRs modelRsNew = new ModelRs();
+        modelRsNew.setId(modelRsNew.getId());
+        boolean flag = false;
+
+        if (Objects.nonNull(modelRs.getName()) && !modelRs.getLabel().equals(modelRsOld.getLabel())) {
+            ModelRs modelRsByLabel = ruleSetDomainService.queryRsByLabel(modelRs.getProjectId(), modelRs.getLabel());
+            if (Objects.nonNull(modelRsByLabel)) {
+                throw new ManagerException(ManagerErrorCode.E20);
+            }
+            modelRsNew.setLabel(modelRs.getLabel());
+            flag = true;
+        }
+
+        if (Objects.nonNull(modelRs.getCatalogId()) && !Objects.equals(modelRs.getCatalogId(), modelRsOld.getCatalogId())) {
+            if (Objects.nonNull(ruleSetDomainService.checkRsCatalogExist(modelRs.getProjectId(), modelRs.getCatalogId()))) {
+                modelRsNew.setCatalogId(modelRs.getCatalogId());
+                flag = true;
+            } else {
+                throw new ManagerException(ManagerErrorCode.E20);
+            }
+        }
+
+        if (flag) {
+            ModelRsHis modelRsHis = ruleSetDomainService.addRuleSetHis(modelRsOld, His.of(HisType.U, ""));
+            modelRsNew.setHisId(modelRsHis.getId());
+            ruleSetDomainService.updateRuleSet(modelRsNew);
+        }
+
+        RsCatalog rsCatalog = new RsCatalog();
+        rsCatalog.setId(modelRs.getId());
+        return rsCatalog;
+    }
 }
