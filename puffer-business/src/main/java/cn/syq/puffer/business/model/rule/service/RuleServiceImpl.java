@@ -8,6 +8,7 @@ import cn.syq.puffer.dao.sql.entity.ModelRule;
 import cn.syq.puffer.dao.sql.entity.ModelRuleHis;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -47,5 +48,19 @@ public class RuleServiceImpl implements RuleService {
         ruleDomainService.updateModelRule(modelRuleUpdate);
 
         return modelRuleNew;
+    }
+
+    @Override
+    public List<ModelRule> listRules(long projectId, long rsId) {
+        projectDomainService.checkProjectExist(projectId);
+        ruleSetDomainService.checkRuleSetExist(projectId, rsId);
+        return ruleDomainService.listModelRule(projectId, Optional.of(rsId));
+    }
+
+    @Override
+    public ModelRule getRuleMeta(long projectId, long rsId, long ruleId) {
+        projectDomainService.checkProjectExist(projectId);
+        ruleSetDomainService.checkRuleSetExist(projectId, rsId);
+        return ruleDomainService.checkRuleExist(projectId, rsId, ruleId);
     }
 }

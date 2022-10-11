@@ -42,15 +42,27 @@ public class RuleDomainServiceImpl implements RuleDomainService {
     }
 
     @Override
-    public List<ModelRule> listModelRule(long projectId) {
+    public ModelRule checkRuleExist(long projectId, long rsId, long ruleId) {
+        ModelRule modelRule = modelRuleMapper.selectById(ruleId);
+        if (Objects.isNull(modelRule) ||
+                !Objects.equals(modelRule.getProjectId(), projectId) ||
+                !Objects.equals(modelRule.getRsId(), ruleId)) {
+            throw new ManagerException(ManagerErrorCode.E20);
+        }
+        return modelRule;
+    }
+
+    @Override
+    public List<ModelRule> listModelRule(long projectId, Optional<Long> rsIdOpt) {
         LambdaQueryWrapper<ModelRule> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(ModelRule::getProjectId, projectId);
+        wrapper.eq(rsIdOpt.isPresent(), ModelRule::getRsId, rsIdOpt.get());
         return modelRuleMapper.selectList(wrapper);
     }
 
     @Override
     public Map<Long, List<Rule>> listRuleGroupByCatalogId(long projectId) {
-        return listModelRule(projectId).stream()
+        return listModelRule(projectId, Optional.empty()).stream()
                 .map(this::modelRule2Rule)
                 .collect(Collectors.groupingBy(
                         Rule::getRsId,

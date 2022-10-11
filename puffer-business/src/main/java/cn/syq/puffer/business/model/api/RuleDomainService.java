@@ -53,7 +53,9 @@ public interface RuleDomainService {
 
     ModelRule queryModelRuleByLabel(long projectId, String label);
 
-    List<ModelRule> listModelRule(long projectId);
+    ModelRule checkRuleExist(long projectId, long rsId, long ruleId);
+
+    List<ModelRule> listModelRule(long projectId, Optional<Long> rsIdOpt);
 
     Map<Long, List<Rule>> listRuleGroupByCatalogId(long projectId);
 

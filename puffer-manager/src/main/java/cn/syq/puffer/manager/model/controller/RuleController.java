@@ -7,12 +7,11 @@ import cn.syq.puffer.manager.model.api.rule.RuleMeta;
 import cn.syq.puffer.manager.model.api.rule.RuleNew;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanCopier;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * ***
@@ -28,7 +27,7 @@ public class RuleController {
     private RuleService ruleService;
 
 
-    @PutMapping("{projectId:\\d+/ruleset/{rsId:\\d+/rule}}")
+    @PutMapping("{projectId:\\d+}/ruleset/{rsId:\\d+/rule}")
     @Valid
     public ManagerResponse<RuleMeta> addRule(@RequestBody RuleNew ruleNew) {
         ModelRule modelRule = new ModelRule();
@@ -41,4 +40,31 @@ public class RuleController {
         ruleMeta.setId(modelRuleNew.getId());
         return ManagerResponse.buildSuccess(ruleMeta);
     }
+
+    @GetMapping("{projectId:\\d+}/ruleset/{rsId:\\d+/rule}")
+    @Valid
+    public ManagerResponse<List<RuleMeta>> listRules(@PathVariable("projectId") Long projectId, @PathVariable("rsId") Long rsId) {
+        return ManagerResponse.buildSuccess(ruleService.listRules(projectId, rsId).stream().map(modelRule -> {
+            RuleMeta ruleMeta = new RuleMeta();
+            ruleMeta.setId(modelRule.getId());
+            ruleMeta.setName(modelRule.getName());
+            ruleMeta.setLabel(modelRule.getLabel());
+            return ruleMeta;
+        }).collect(Collectors.toList()));
+    }
+
+    @GetMapping("{projectId:\\d+}/ruleset/{rsId:\\d+}/rule/{ruleId:\\d+}/meta")
+    @Valid
+    public ManagerResponse<RuleMeta> getRuleMeta(@PathVariable("projectId") Long projectId,
+                                                 @PathVariable("rsId") Long rsId,
+                                                 @PathVariable("ruleId") Long ruleId) {
+        ModelRule modelRule = ruleService.getRuleMeta(projectId, rsId, ruleId);
+        RuleMeta ruleMeta = new RuleMeta();
+        ruleMeta.setId(modelRule.getId());
+        ruleMeta.setName(modelRule.getName());
+        ruleMeta.setLabel(modelRule.getLabel());
+        return ManagerResponse.buildSuccess(ruleMeta);
+    }
+
+    
 }
