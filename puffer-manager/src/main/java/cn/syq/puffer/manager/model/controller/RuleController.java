@@ -1,5 +1,6 @@
 package cn.syq.puffer.manager.model.controller;
 
+import cn.syq.puffer.business.model.rule.api.RuleContext;
 import cn.syq.puffer.business.model.rule.api.RuleService;
 import cn.syq.puffer.dao.sql.entity.ModelRule;
 import cn.syq.puffer.manager.model.api.ManagerResponse;
@@ -66,5 +67,11 @@ public class RuleController {
         return ManagerResponse.buildSuccess(ruleMeta);
     }
 
-    
+    @GetMapping("{projectId:\\d+}/ruleset/{rsId:\\d+}/rule/{ruleId:\\d+}/context")
+    @Valid
+    public ManagerResponse<RuleContext> getRuleContext(@PathVariable("projectId") Long projectId,
+                                                       @PathVariable("rsId") Long rsId,
+                                                       @PathVariable("ruleId") Long ruleId) {
+        return null;
+    }
 }
