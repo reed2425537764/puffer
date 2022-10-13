@@ -17,4 +17,6 @@ public interface RuleService {
     List<ModelRule> listRules(long projectId, long rsId);
 
     ModelRule getRuleMeta(long projectId, long rsId, long ruleId);
+
+    RuleContext getRuleContext(long projectId, long rsId, long ruleId);
 }

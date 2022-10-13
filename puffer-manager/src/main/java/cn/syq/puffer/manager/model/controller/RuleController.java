@@ -72,6 +72,6 @@ public class RuleController {
     public ManagerResponse<RuleContext> getRuleContext(@PathVariable("projectId") Long projectId,
                                                        @PathVariable("rsId") Long rsId,
                                                        @PathVariable("ruleId") Long ruleId) {
-        return null;
+        return ManagerResponse.buildSuccess(ruleService.getRuleContext(projectId, rsId, ruleId));
     }
 }

@@ -3,9 +3,13 @@ package cn.syq.puffer.business.model.rule.service;
 import cn.syq.puffer.business.exception.ManagerErrorCode;
 import cn.syq.puffer.business.exception.ManagerException;
 import cn.syq.puffer.business.model.api.*;
+import cn.syq.puffer.business.model.rule.api.RuleContext;
 import cn.syq.puffer.business.model.rule.api.RuleService;
+import cn.syq.puffer.business.model.rule.api.json.RuleJson;
+import cn.syq.puffer.dao.sql.entity.ModelDo;
 import cn.syq.puffer.dao.sql.entity.ModelRule;
 import cn.syq.puffer.dao.sql.entity.ModelRuleHis;
+import com.alibaba.fastjson.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -28,6 +32,9 @@ public class RuleServiceImpl implements RuleService {
 
     @Autowired
     private RuleSetDomainService ruleSetDomainService;
+
+    @Autowired
+    private DataObjectDomainService dataObjectDomainService;
 
 
     @Override
@@ -62,5 +69,40 @@ public class RuleServiceImpl implements RuleService {
         projectDomainService.checkProjectExist(projectId);
         ruleSetDomainService.checkRuleSetExist(projectId, rsId);
         return ruleDomainService.checkRuleExist(projectId, rsId, ruleId);
+    }
+
+    @Override
+    public RuleContext getRuleContext(long projectId, long rsId, long ruleId) {
+        projectDomainService.checkProjectExist(projectId);
+        ruleSetDomainService.checkRuleSetExist(projectId, rsId);
+        ModelRule modelRule = ruleDomainService.checkRuleExist(projectId, rsId, ruleId);
+
+        RuleContext ruleContext = new RuleContext();
+        ruleContext.setId(modelRule.getId());
+        if (Objects.equals("drl", modelRule.getDrl())) {
+            ruleContext.setContext("");
+        } else {
+            RuleJson ruleJson = JSON.parseObject(modelRule.getDrl(), RuleJson.class);
+            ruleJson.getConditions().forEach(condition -> condition.getSubPatterns().forEach(subPattern -> {
+                if (subPattern.getDoId() < 0L) {
+                    subPattern.setText("系统参数");
+                } else {
+                    ModelDo modelDo = dataObjectDomainService.checkDoExist(Optional.of(projectId), subPattern.getDoId());
+                    subPattern.setText(modelDo.getClassName());
+//                    subPattern.setDoType(dataObjectDomainService.getOuterDoType(modelDo.getDoType()));
+                }
+            }));
+            ruleJson.getActions().forEach(subAction -> {
+                if (subAction.getDoId() < 0L) {
+                    subAction.setText("系统参数");
+                } else {
+                    ModelDo modelDo = dataObjectDomainService.checkDoExist(Optional.of(projectId), subAction.getDoId());
+                    subAction.setText(modelDo.getClassName());
+//                    subAction.setDoType(dataObjectDomainService.getOuterDoType(modelDo.getDoType()));
+                }
+            });
+            ruleContext.setContext(JSON.toJSONString(ruleJson));
+        }
+        return ruleContext;
     }
 }
